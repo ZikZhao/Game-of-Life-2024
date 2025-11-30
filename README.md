@@ -9,7 +9,7 @@ An industrial-grade implementation of Conway's Game of Life written in **Go**, f
 ### 1. Extreme Parallel Performance
 Designed for maximum throughput using multi-threading and shared memory optimizations.
 * **Optimized Synchronization:** Replaced standard mutexes with Condition Variables and Channels to minimize locking overhead.
-* **Intelligent Block Division:** Implemented an "Unsafe Boundary" strategy. [cite_start]Workers only synchronize when processing boundary cells, allowing the majority of the grid ("Safe Regions") to be processed without locking[cite: 15, 16].
+* **Intelligent Block Division:** Implemented an "Unsafe Boundary" strategy. Workers only synchronize when processing boundary cells, allowing the majority of the grid ("Safe Regions") to be processed without locking.
 * **Non-Blocking I/O:** Decoupled I/O requests (initiate and gather) to prevent disk latency from blocking computation threads.
 * **Memory Efficiency:** Reused worker goroutines and buffer slices throughout the lifecycle to eliminate Garbage Collection (GC) overhead.
 
@@ -29,9 +29,9 @@ The distributor allocates tasks using a block division algorithm ensuring evenly
 
 * **Race-Free Boundary Handling:** To solve data races introduced by the caching layer without heavy locking, blocks are divided into two zones:
   
-    * **Safe Regions (Green):** Central cells where all neighbors are within the local thread's block. [cite_start]These are processed and updated immediately (race-free)[cite: 48, 50].
+    * **Safe Regions (Green):** Central cells where all neighbors are within the local thread's block. These are processed and updated immediately (race-free).
     
-    * **Unsafe Boundaries (Red):** Edge cells that share neighbors with adjacent blocks. [cite_start]Changes here are recorded separately and synchronized later to ensure data integrity.
+    * **Unsafe Boundaries (Red):** Edge cells that share neighbors with adjacent blocks. Changes here are recorded separately and synchronized later to ensure data integrity.
     
 
   ![parallel design](./assets/parallel-design.png)
